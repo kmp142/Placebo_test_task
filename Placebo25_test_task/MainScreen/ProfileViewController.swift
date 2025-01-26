@@ -56,14 +56,15 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupBindings() {
-        viewModel?.profileDataSubject.sink { profileData in
+        viewModel?.profileDataSubject.sink { [weak self] profileData in
+            guard let self else { return }
             self.profileView.setupAge(age: profileData.age)
             self.profileView.setupName(name: profileData.name)
             self.profileView.setupAvatar(image: profileData.avatar)
         }.store(in: &subscriptions)
         
-        viewModel?.chartDataSubject.sink { chartEntries in
-            self.profileView.updatePieChart(entries: chartEntries)
+        viewModel?.chartDataSubject.sink { [weak self] chartEntries in
+            self?.profileView.updatePieChart(entries: chartEntries)
         }.store(in: &subscriptions)
     }
     
